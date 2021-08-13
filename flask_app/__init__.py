@@ -1,5 +1,6 @@
 import os
 from flask import Flask
+from flask_cors import CORS
 from flask_app.export_variables import export_envs
 
 export_envs()
@@ -8,3 +9,4 @@ app.config['SECRET_KEY'] = os.environ.get('secret_key')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('database_url')
 app.config['JSON_SORT_KEYS'] = False
+cors = CORS(app, resources={r"*": {"origins": "https://vendor-videos.netlify.app/*"}})
