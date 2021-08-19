@@ -27,7 +27,7 @@ class Validations:
         elif len(password) > 80:
             errors += 1
         
-        if errors > 0 :
+        if errors > 0:
             return True
         return False
 
@@ -44,7 +44,30 @@ class Validations:
         elif len(password) > 80:
             errors += 1
 
-        if errors > 0 :
+        if errors > 0:
             return True
         return False
+    
+    @staticmethod
+    def reset_password(email):
+        error = 0
+        if email == "":
+            error += 1
+        elif len(email) > 321:
+            error += 1
         
+        if error > 0:
+            return True
+        return False
+
+    @staticmethod
+    def new_password(password):
+        error = 0
+        if password == "":
+            error += 1
+        elif len(password) > 80:
+            error += 1
+
+        if error > 0:
+            return True
+        return False

@@ -8,12 +8,18 @@ from flask_app import app
 class Auth:
 
     @staticmethod
-    def generate_token(user_id):
+    def generate_login_token(user_id):
         token = jwt.encode({"user_id": user_id,
         "exp": datetime.datetime.utcnow() + datetime.timedelta(days=7)},
         app.config['SECRET_KEY'], algorithm="HS256")
         return token.decode('utf-8')
- 
+
+    def generate_passwordreset_token(email):
+        token = jwt.encode({"email": email,
+        "exp": datetime.datetime.utcnow() + datetime.timedelta(minutes=30)},
+        app.config['SECRET_KEY'], algorithm="HS256")
+        return token.decode('utf-8')
+
     @staticmethod
     def verify_token(token):
         try:

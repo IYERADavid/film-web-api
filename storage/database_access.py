@@ -27,6 +27,14 @@ class Userdatabaseclients:
         return None
 
     @staticmethod
+    def change_password(email, password):
+        user = User.query.filter_by(email=email).one()
+        hashed_password = sha256_crypt.encrypt(password)
+        user.password = hashed_password
+        db.session.commit()
+        return user.serializable_json()
+
+    @staticmethod
     def get_user(user_id):
         user = User.query.filter_by(user_id=user_id).one()
         return user.serializable_json()
