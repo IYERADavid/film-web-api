@@ -81,7 +81,7 @@ def reset_password():
         basedir = os.path.abspath(os.path.dirname(__file__))
         with open(basedir+'/email.html', 'r') as f:
             file_data = f.read().format(route_url_with_token)
-        msg = Message(subject="Change password", recipients=["weberdavison@gmail.com"])
+        msg = Message(subject="Change password", recipients=[email_value])
         msg.html = file_data
         mail.send(msg)
         response = { "status" : "success", "body": "Check your email inbox to confirm password reset"}
