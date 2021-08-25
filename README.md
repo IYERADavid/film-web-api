@@ -18,15 +18,15 @@ current created routes :
       - html_form ==> contains:
       
         - html_input with name attribute equal to 'first_name' and value equal to user first_name
-        and also must less than 26 characters
+          and also must be less than 26 characters
         - html_input with name attribute equal to 'last_name' and value equal to user last_name
-        and also must less than 26 characters
+          and also must be less than 26 characters
         - html_input with name attribute equal to 'middle_name' and value equal to user middle_name
-        and also must less than 16 characters
+          and also must be less than 16 characters
         - html_input with name attribute equal to 'email' and value equal to user email
-        and also must less than 322 characters
+          and also must be less than 322 characters
         - html_input with name attribute equal to 'password' and value equal to user password
-        and also must less than 81 characters
+          and also must be less than 81 characters
         
     * outputs:
       - if one of html input value not less than specified value above:
@@ -45,9 +45,9 @@ current created routes :
       - html_form ==> contains:
       
         - html_input with name attribute equal to 'email' and value equal to user email
-          and also must less than 322 characters
+          and also must be less than 322 characters
         - html_input with name attribute equal to 'password' and value equal to user password
-          and also must less than 81 characters  
+          and also must be less than 81 characters  
                     
     * outputs:
               
