@@ -16,6 +16,7 @@ current created routes :
     * inputs:
       - POST request with request.body equal to { html_form }
       - html_form ==> contains:
+      
         - html_input with name attribute equal to 'first_name' and value equal to user first_name
         and also must less than 26 characters
         - html_input with name attribute equal to 'last_name' and value equal to user last_name
@@ -42,6 +43,7 @@ current created routes :
     * inputs:
       - POST request with request.body equal to { html_form }
       - html_form ==> contains:
+      
         - html_input with name attribute equal to 'email' and value equal to user email
           and also must less than 322 characters
         - html_input with name attribute equal to 'password' and value equal to user password
