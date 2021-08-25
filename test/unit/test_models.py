@@ -1,6 +1,6 @@
 from storage.database_tables import User
 
-def test_new_family_member():
+def test_new_user():
     new_user = User(
         first_name="f_name", last_name="l_name",
         middle_name="m_name", email="test@gmail.com",
@@ -13,8 +13,8 @@ def test_new_family_member():
     assert new_user.password == "password"
     assert new_user.creation_time == None
     assert new_user.serializable_json() == {
-        'user_id': None,
-        'first_name': 'f_name',
-        'last_name': 'l_name',
-        'middle_name': 'm_name',
-        'email': 'test@gmail.com'}
+        'user_id': new_user.user_id,
+        'first_name': new_user.first_name,
+        'last_name': new_user.last_name,
+        'middle_name': new_user.middle_name,
+        'email': new_user.email}
