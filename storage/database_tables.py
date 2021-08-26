@@ -21,3 +21,28 @@ class User(db.Model):
             'middle_name': self.middle_name,
             'email': self.email
         }
+
+class Video(db.Model):
+    video_id = db.Column(db.Integer, primary_key=True)
+    video_photo = db.Column(db.String, unique=True, nullable=False)
+    video_filename = db.Column(db.String, unique=True, nullable=False)
+    video_name = db.Column(db.String(100), nullable=False)
+    video_description = db.Column(db.String(3000), nullable=False)
+    active = db.Column(db.Boolean, default=True, nullable=False)
+    video_year = db.Column(db.Integer, nullable=False)
+    video_genre = db.Column(db.String(30), nullable=False)
+    video_language = db.Column(db.String(30), nullable=False)
+    video_time_saved = db.Column(db.DateTime, default=datetime.datetime.now, nullable=False)
+
+    def serializable_json(self):
+        return {
+            'video_id': self.video_id,
+            'video_photo': self.video_photo,
+            'video_filename': self.video_filename,
+            'video_name': self.video_name,
+            'video_description': self.video_description,
+            'active': self.active,
+            'video_year': self.video_year,
+            'video_genre': self.video_genre,
+            'video_language': self.video_language
+        }

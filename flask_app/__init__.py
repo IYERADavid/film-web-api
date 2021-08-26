@@ -17,6 +17,9 @@ app.config['MAIL_PASSWORD'] = os.environ.get("email_password")
 app.config['MAIL_DEFAULT_SENDER'] = os.environ.get("email_username")
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
+basedir = os.path.abspath(os.path.dirname(__file__))
+upload_folder = basedir + os.environ.get("uploads_path")
+app.config['UPLOAD_FOLDER'] = upload_folder
 
 mail = Mail(app)
-cors = CORS(app, resources={r"*": {"origins": "https://vendor-videos.netlify.app/*"}})
+cors = CORS(app, resources={r"*": {"origins": "*"}})

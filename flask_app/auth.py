@@ -1,5 +1,6 @@
 import jwt
 import datetime
+import inspect
 from functools import wraps
 from werkzeug.utils import secure_filename
 from flask import request, jsonify
@@ -36,12 +37,13 @@ class Auth:
     def require_login(self, func):
         @wraps(func)
         def secure_function(*args, **kwargs):
-            user_token = request['headers'].get('Authorization')
+            user_token =  request.headers.get('Authorization')
             if user_token:
                 token = bytes(user_token,'utf-8')
                 token_value = self.verify_token(token=token)
                 if token_value:
-                    kwargs['user_id'] = token_value["user_id"]
+                    if 'user_id' in inspect.getargspec(func).args:
+                        kwargs['user_id'] = token_value["user_id"]
                     return func(*args,**kwargs)
             response = { "status" : "login_required", "body" : "You must login to continue" }
             return jsonify(response)

@@ -1,5 +1,5 @@
 from passlib.hash import sha256_crypt
-from storage.database_tables import db, User
+from storage.database_tables import db, User, Video
 
 class Userdatabaseclients:
 
@@ -38,3 +38,49 @@ class Userdatabaseclients:
     def get_user(user_id):
         user = User.query.filter_by(user_id=user_id).one()
         return user.serializable_json()
+    
+    @staticmethod
+    def uploaded_videos():
+        all_videos_info = Video.query.order_by(Video.video_id.desc())
+        needed_videos = all_videos_info.limit(60)
+        videos = []
+        for video in needed_videos:
+            videos.append(video.serializable_json())
+        return videos
+    
+    @staticmethod
+    def videos_with_name(name):
+        all_videos_info = Video.query.filter_by(
+            video_name=name).order_by(Video.video_id.desc())
+        videos = []
+        for video in all_videos_info:
+            videos.append(video.serializable_json())
+        return videos
+
+    @staticmethod
+    def videos_with_genre(genre):
+        all_videos_info = Video.query.filter_by(
+            video_genre=genre).order_by(Video.video_id.desc())
+        videos = []
+        for video in all_videos_info:
+            videos.append(video.serializable_json())
+        return videos
+
+    @staticmethod
+    def videos_with_year(year):
+        year = int(year)
+        all_videos_info = Video.query.filter_by(
+            video_year=year).order_by(Video.video_id.desc())
+        videos = []
+        for video in all_videos_info:
+            videos.append(video.serializable_json())
+        return videos
+
+    @staticmethod
+    def videos_with_language(language):
+        all_videos_info = Video.query.filter_by(
+            video_language=language).order_by(Video.video_id.desc())
+        videos = []
+        for video in all_videos_info:
+            videos.append(video.serializable_json())
+        return videos

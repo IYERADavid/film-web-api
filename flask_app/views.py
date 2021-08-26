@@ -1,5 +1,6 @@
 import os
-from flask import jsonify,json, url_for, request, redirect, session
+from flask import jsonify,json, url_for, request, redirect, session, \
+    send_from_directory
 from flask_app import app, mail
 from storage.database_access import Userdatabaseclients
 from flask_app.validations import Validations
@@ -65,8 +66,7 @@ def signin():
 @app.route("/reset_password", methods=['POST'])
 def reset_password():
     password_reset_url = request.headers['password_reset_url']
-    user_data = request.form
-    email_value = user_data['email']
+    email_value = request.form['email']
 
     error = Validations.reset_password(email=email_value)
     if error:
@@ -97,8 +97,7 @@ def new_password(token):
     token_value = Auth.verify_token(token=token)
     if token_value:
         if request.method == "POST":
-            user_data = request.form
-            password_value = user_data['password']
+            password_value = request.form['password']
 
             error = Validations.new_password(password=password_value)
             if error:
@@ -120,5 +119,37 @@ def new_password(token):
 @Auth.require_login
 def home(user_id):
     user = Userdatabaseclients.get_user(user_id=user_id)
-    response = { "status" : "success", "body" : user}
+    videos = Userdatabaseclients.uploaded_videos()
+    if request.method == "POST":
+        video_name = request.form['movie_name']
+        videos = Userdatabaseclients.videos_with_name(video_name)
+        response = { "status" : "success", "body" : { "searched_videos": videos , "user_data": user}}
+
+    response = { "status" : "success", "body" : { "all_videos": videos , "user_data": user}}
     return jsonify(response)
+
+@app.route('/home/watch-movies-Genre-<genre>', methods=['GET'])
+@Auth.require_login
+def videos_genre(genre):
+    videos = Userdatabaseclients.videos_with_genre(genre=genre)
+    response = { "status" : "success", "body" : { "all_videos": videos}}
+    return jsonify(response)
+
+@app.route('/home/watch-movies-Year-<year>', methods=['GET'])
+@Auth.require_login
+def videos_year(year):
+    videos = Userdatabaseclients.videos_with_year(year=year)
+    response = { "status" : "success", "body" : { "all_videos": videos}}
+    return jsonify(response)
+
+@app.route('/home/watch-movies-Language-<language>', methods=['GET'])
+@Auth.require_login
+def videos_language(language):
+    videos = Userdatabaseclients.videos_with_language(language=language)
+    response = { "status" : "success", "body" : { "all_videos": videos}}
+    return jsonify(response)
+
+@app.route('/view_file/<filename>', methods=['GET'])
+@Auth.require_login
+def view_file(filename):
+    return send_from_directory(app.config["UPLOAD_FOLDER"], filename)
