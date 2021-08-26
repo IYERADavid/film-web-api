@@ -37,7 +37,7 @@ class Auth:
     def require_login(self, func):
         @wraps(func)
         def secure_function(*args, **kwargs):
-            user_token =  request.headers.get('Authorization')
+            user_token = request.headers.get('Authorization')
             if user_token:
                 token = bytes(user_token,'utf-8')
                 token_value = self.verify_token(token=token)
