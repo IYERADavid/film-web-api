@@ -123,33 +123,62 @@ def home(user_id):
     if request.method == "POST":
         video_name = request.form['movie_name']
         videos = Userdatabaseclients.videos_with_name(video_name)
-        response = { "status" : "success", "body" : { "searched_videos": videos , "user_data": user}}
+        response = { "status" : "success", "body" : { "uploaded_videos": videos , "user_data": user}}
 
-    response = { "status" : "success", "body" : { "all_videos": videos , "user_data": user}}
+    response = { "status" : "success", "body" : { "videos_list": videos , "user_data": user}}
+    return jsonify(response)
+
+@app.route('/profile', methods=['GET','POST'])
+@Auth.require_login
+def user_profile(user_id):
+    if request.method == "POST":
+        pass
+    user_data = Userdatabaseclients.get_user(user_id=user_id)
+    response = { "status" : "success", "body" : { "user_data" : user_data} }
+    return jsonify(response)
+
+@app.route('/delete/profile/<user_id>')
+def remove_profile(user_id):
+    user_data = Userdatabaseclients.remove_profile(
+        user_id=user_id, upload_path=app.config['UPLOAD_FOLDER']
+    )
+    if not user_data:
+        response = { "status" : "invalid_profile",
+        "body" : "You already haven't any profile set" }
+        return jsonify(response)
+ 
+    response = { "status" : "success", "body" : { "user_data" : user_data} }
     return jsonify(response)
 
 @app.route('/home/watch-movies-Genre-<genre>', methods=['GET'])
 @Auth.require_login
 def videos_genre(genre):
     videos = Userdatabaseclients.videos_with_genre(genre=genre)
-    response = { "status" : "success", "body" : { "all_videos": videos}}
+    response = { "status" : "success", "body" : { "videos_list": videos}}
     return jsonify(response)
 
 @app.route('/home/watch-movies-Year-<year>', methods=['GET'])
 @Auth.require_login
 def videos_year(year):
     videos = Userdatabaseclients.videos_with_year(year=year)
-    response = { "status" : "success", "body" : { "all_videos": videos}}
+    response = { "status" : "success", "body" : { "videos_list": videos}}
     return jsonify(response)
 
 @app.route('/home/watch-movies-Language-<language>', methods=['GET'])
 @Auth.require_login
 def videos_language(language):
     videos = Userdatabaseclients.videos_with_language(language=language)
-    response = { "status" : "success", "body" : { "all_videos": videos}}
+    response = { "status" : "success", "body" : { "videos_list": videos}}
     return jsonify(response)
 
 @app.route('/view_file/<filename>', methods=['GET'])
 @Auth.require_login
 def view_file(filename):
     return send_from_directory(app.config["UPLOAD_FOLDER"], filename)
+
+@app.route('/recent_movies')
+@Auth.require_login
+def recent_videos():
+    videos = Userdatabaseclients.recent_new_videos()
+    response = { "status" : "success", "body" : { "videos_list": videos}}
+    return jsonify(response)

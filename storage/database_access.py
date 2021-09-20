@@ -1,3 +1,4 @@
+import os
 from passlib.hash import sha256_crypt
 from storage.database_tables import db, User, Video
 
@@ -84,3 +85,22 @@ class Userdatabaseclients:
         for video in all_videos_info:
             videos.append(video.serializable_json())
         return videos
+
+    @staticmethod
+    def recent_new_videos():
+        all_videos_info = Video.query.order_by(Video.video_id.desc())
+        needed_videos = all_videos_info.limit(20)
+        videos = []
+        for video in needed_videos:
+            videos.append(video.serializable_json())
+        return videos
+
+    @staticmethod
+    def remove_profile(user_id, upload_path):
+        user = User.query.filter_by(user_id=user_id).one()
+        if user.profile_picture != os.environ["user_profile"]:
+            os.remove(os.path.join(upload_path, user.profile_picture))
+            user.profile_picture = os.environ["user_profile"]
+            db.session.commit()
+            return user.serializable_json()
+        return None
