@@ -6,6 +6,7 @@ from storage.database_access import Userdatabaseclients
 from flask_app.validations import Validations
 from flask_app.auth import Auth
 from flask_mail import Message
+from werkzeug.utils import secure_filename
 
 
 @app.route('/signup', methods=['POST'])
@@ -115,7 +116,7 @@ def new_password(token):
     return jsonify(response)
     
 
-@app.route('/home', methods=['GET'])
+@app.route('/home')
 @Auth.require_login
 def home(user_id):
     user = Userdatabaseclients.get_user(user_id=user_id)
@@ -132,12 +133,25 @@ def home(user_id):
 @Auth.require_login
 def user_profile(user_id):
     if request.method == "POST":
-        pass
+        allowed_file_ext = ['jpg','jpeg','png','gif','tiff','psd','al','raw']
+        profile = request.files["profile_photo"]
+        profile_name = secure_filename(profile.filename)
+        profile_extension = profile_name.rsplit('.', 1)[1].lower()
+        if profile_extension in allowed_file_ext:
+            user_data = Userdatabaseclients.update_profile(
+                user_id=user_id,profile_name=profile_name,
+                profile=profile,upload_path=app.config['UPLOAD_FOLDER']
+            )
+            response = { "status" : "success","body" : { "user_data" : user_data} }
+            return jsonify(response)
+        response = { "status" : "invalid_extension",
+        "body" : "Your file extension is not allowed" }
+        return jsonify(response)
     user_data = Userdatabaseclients.get_user(user_id=user_id)
     response = { "status" : "success", "body" : { "user_data" : user_data} }
     return jsonify(response)
 
-@app.route('/delete/profile/<user_id>')
+@app.route('/delete/profile')
 def remove_profile(user_id):
     user_data = Userdatabaseclients.remove_profile(
         user_id=user_id, upload_path=app.config['UPLOAD_FOLDER']
@@ -150,28 +164,28 @@ def remove_profile(user_id):
     response = { "status" : "success", "body" : { "user_data" : user_data} }
     return jsonify(response)
 
-@app.route('/home/watch-movies-Genre-<genre>', methods=['GET'])
+@app.route('/home/watch-movies-Genre-<genre>')
 @Auth.require_login
 def videos_genre(genre):
     videos = Userdatabaseclients.videos_with_genre(genre=genre)
     response = { "status" : "success", "body" : { "videos_list": videos}}
     return jsonify(response)
 
-@app.route('/home/watch-movies-Year-<year>', methods=['GET'])
+@app.route('/home/watch-movies-Year-<year>')
 @Auth.require_login
 def videos_year(year):
     videos = Userdatabaseclients.videos_with_year(year=year)
     response = { "status" : "success", "body" : { "videos_list": videos}}
     return jsonify(response)
 
-@app.route('/home/watch-movies-Language-<language>', methods=['GET'])
+@app.route('/home/watch-movies-Language-<language>')
 @Auth.require_login
 def videos_language(language):
     videos = Userdatabaseclients.videos_with_language(language=language)
     response = { "status" : "success", "body" : { "videos_list": videos}}
     return jsonify(response)
 
-@app.route('/view_file/<filename>', methods=['GET'])
+@app.route('/view_file/<filename>')
 @Auth.require_login
 def view_file(filename):
     return send_from_directory(app.config["UPLOAD_FOLDER"], filename)

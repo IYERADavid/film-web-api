@@ -96,6 +96,17 @@ class Userdatabaseclients:
         return videos
 
     @staticmethod
+    def update_profile(user_id, profile_name, profile, upload_path):
+        user = User.query.filter_by(user_id=user_id).one()
+        if user.profile_picture != os.environ["user_profile"]:
+            os.remove(os.path.join(upload_path, user.profile_picture))
+        filename = str(user.user_id) + profile_name
+        profile.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        user.profile_picture = filename
+        db.session.commit()
+        return user.serializable_json()
+
+    @staticmethod
     def remove_profile(user_id, upload_path):
         user = User.query.filter_by(user_id=user_id).one()
         if user.profile_picture != os.environ["user_profile"]:
