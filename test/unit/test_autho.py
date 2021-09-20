@@ -55,6 +55,12 @@ class Test_Auth:
             user_id = 'vendor videos service center'
             exp_time = datetime.datetime.utcnow() + datetime.timedelta(seconds=30)
             new_token = authatications.Auth.generate_login_token(user_id=user_id, exp_time=exp_time)
+            """
+            class Bunch:
+                def __init__(self,**kw):
+                    self.__dict__.update(kw)
+            request = Bunch(headers={'Authorization': new_token})
+            """
             request={'headers': {'Authorization': new_token}}
             mocker.patch.object(authatications, 'request', request)
             def sample_func(user_id):

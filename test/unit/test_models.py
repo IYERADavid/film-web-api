@@ -12,13 +12,15 @@ def test_new_user():
     assert new_user.middle_name == "m_name"
     assert new_user.email == "test@gmail.com"
     assert new_user.password == "password"
+    assert new_user.profile_picture == None
     assert new_user.creation_time == None
     assert new_user.serializable_json() == {
         'user_id': new_user.user_id,
         'first_name': new_user.first_name,
         'last_name': new_user.last_name,
         'middle_name': new_user.middle_name,
-        'email': new_user.email
+        'email': new_user.email,
+        'profile_picture': new_user.profile_picture
     }
 
 def test_new_video():
