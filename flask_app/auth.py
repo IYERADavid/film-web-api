@@ -42,7 +42,7 @@ class Auth:
                 token = bytes(user_token,'utf-8')
                 token_value = self.verify_token(token=token)
                 if token_value:
-                    if 'user_id' in inspect.getargspec(func).args:
+                    if 'user_id' in inspect.getfullargspec(func).args:
                         kwargs['user_id'] = token_value["user_id"]
                     return func(*args,**kwargs)
             response = { "status" : "login_required", "body" : "You must login to continue" }
