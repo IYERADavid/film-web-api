@@ -2,11 +2,12 @@ import jwt
 import datetime
 from flask_app import app
 import flask_app.auth as authatications
+import JsObjectLike as js_object
 
 class Test_Auth:
 
     @staticmethod
-    def test_generate_login_token(mocker):
+    def test_generate_login_token():
         user_id = 'user_login_token'
         exp_time = datetime.datetime.utcnow() + datetime.timedelta(seconds=30)
         new_token = authatications.Auth.generate_login_token(user_id=user_id, exp_time=exp_time)
@@ -18,7 +19,7 @@ class Test_Auth:
         assert user_id == token_data['user_id']
 
     @staticmethod
-    def test_generate_passwordreset_token(mocker):
+    def test_generate_passwordreset_token():
         user_email = "testing@gmal.com"
         exp_time = datetime.datetime.utcnow() + datetime.timedelta(seconds=30)
         new_token = authatications.Auth.generate_passwordreset_token(email=user_email, exp_time=exp_time)
@@ -55,13 +56,7 @@ class Test_Auth:
             user_id = 'vendor videos service center'
             exp_time = datetime.datetime.utcnow() + datetime.timedelta(seconds=30)
             new_token = authatications.Auth.generate_login_token(user_id=user_id, exp_time=exp_time)
-            """
-            class Bunch:
-                def __init__(self,**kw):
-                    self.__dict__.update(kw)
-            request = Bunch(headers={'Authorization': new_token})
-            """
-            request={'headers': {'Authorization': new_token}}
+            request = js_object.attrdict(headers={'Authorization': new_token})
             mocker.patch.object(authatications, 'request', request)
             def sample_func(user_id):
                 return user_id
@@ -75,7 +70,7 @@ class Test_Auth:
 
             def jsonify(data):
                 return data
-            request={'headers': {'Authorization': "some wrong token"}}
+            request = js_object.attrdict(headers={'Authorization': "some wrong token"})
             mocker.patch.object(authatications, 'jsonify', jsonify)
             mocker.patch.object(authatications, 'request', request)
             def sample_func(user_id):

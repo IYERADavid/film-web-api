@@ -1,5 +1,6 @@
 import os
 from flask_app.validations import Validations
+import JsObjectLike as js_object
 
 class Test_validations:
 
@@ -33,6 +34,6 @@ class Test_validations:
     def test_user_profile():
         basedir = os.path.abspath(os.path.dirname(__file__))
         real_file =  open(basedir+"/media/download.jpeg", "r")
-        testing_profile = { "filename" : real_file.name }
+        testing_profile = js_object.attrdict(filename=real_file.name)
         errors = Validations.user_profile(profile=testing_profile)
         assert errors == False 
